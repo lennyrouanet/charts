@@ -12,12 +12,15 @@ use Maantje\Charts\SVG\Text;
 
 class Boxplot
 {
+    /** @var array<int, int|float> */
+    public readonly array $values;
+
     /**
      * @param  float[]  $values  min, Q1, median, Q3, max, then outliers
      */
     public function __construct(
         public string $name,
-        public array $values,
+        array $values,
         public ?string $yAxis = null,
         public string $color = '#333',
         public float $strokeWidth = 2,
@@ -39,6 +42,15 @@ class Boxplot
             ));
         }
 
+        foreach ($this->values as $value) {
+            if (! $this->isFiniteNumber($value)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Boxplot "%s" values must be finite numbers.',
+                    $this->name
+                ));
+            }
+        }
+
         for ($i = 1; $i < 5; $i++) {
             if ($this->values[$i] < $this->values[$i - 1]) {
                 throw new InvalidArgumentException(sprintf(
@@ -46,6 +58,14 @@ class Boxplot
                     $this->name
                 ));
             }
+        }
+
+        if (! is_null($this->width) && $this->width < 0) {
+            throw new InvalidArgumentException(sprintf('Boxplot "%s" width must not be negative.', $this->name));
+        }
+
+        if ($this->outlierSize < 0) {
+            throw new InvalidArgumentException(sprintf('Boxplot "%s" outlierSize must not be negative.', $this->name));
         }
     }
 
@@ -129,6 +149,11 @@ class Boxplot
         }
 
         return new Fragment($elements);
+    }
+
+    protected function isFiniteNumber(mixed $value): bool
+    {
+        return (is_int($value) || is_float($value)) && is_finite($value);
     }
 
     public function minValue(): float

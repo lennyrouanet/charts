@@ -46,6 +46,45 @@ it('rejects unordered values', function () {
     'Boxplot "Jan" values must be ordered: min <= Q1 <= median <= Q3 <= max.'
 );
 
+it('rejects values that are not finite numbers', function (mixed $value) {
+    new Boxplot(name: 'Jan', values: [20, 40, 50, 60, 100, $value]);
+})->with([[NAN], [INF], ['abc'], [null], [true]])->throws(
+    InvalidArgumentException::class,
+    'Boxplot "Jan" values must be finite numbers.'
+);
+
+it('rejects a negative width', function () {
+    new Boxplot(name: 'Jan', values: [20, 40, 50, 60, 100], width: -30);
+})->throws(InvalidArgumentException::class, 'Boxplot "Jan" width must not be negative.');
+
+it('rejects a negative outlier size', function () {
+    new Boxplot(name: 'Jan', values: [20, 40, 50, 60, 100], outlierSize: -3);
+})->throws(InvalidArgumentException::class, 'Boxplot "Jan" outlierSize must not be negative.');
+
+it('does not allow values to change after validation', function () {
+    $boxplot = new Boxplot(name: 'Jan', values: [20, 40, 50, 60, 100]);
+
+    $boxplot->values = [100, 60, 50, 40, 20]; // @phpstan-ignore property.readOnlyAssignOutOfClass
+})->throws(Error::class, 'Cannot modify readonly property');
+
+it('renders a flat box when all values are equal', function () {
+    // max 5: left margin 50, width 720
+    expect(boxplotChart(new Boxplot(name: 'Jan', values: [5, 5, 5, 5, 5])))
+        ->toContain('<rect x="380" y="25" width="60" height="0"');
+});
+
+it('renders negative values on a y axis without a fixed minimum', function () {
+    $chart = new Chart(
+        yAxis: new YAxis,
+        series: [new Boxplots(boxplots: [new Boxplot(name: 'Jan', values: [-50, -20, 0, 20, 50])])],
+    );
+
+    // range -50..50: left margin 55, width 715; y(v) = 550 - 5.25 * (v + 50)
+    expect($chart->render())
+        ->toContain('<line x1="412.5" y1="550" x2="412.5" y2="25"')
+        ->toContain('<rect x="382.5" y="182.5" width="60" height="210"');
+});
+
 it('renders a boxplot', function () {
     $svg = boxplotChart(new Boxplot(name: 'Jan', values: [20, 40, 50, 60, 100]));
 
@@ -102,8 +141,11 @@ it('fills the slot when width is null and never exceeds it', function (?float $w
 })->with([[null], [5000.0]]);
 
 it('omits the label when name is empty', function () {
-    expect(boxplotChart(new Boxplot(name: '', values: [20, 40, 50, 60, 100])))
-        ->not->toContain('y="580"');
+    $svg = boxplotChart(new Boxplot(name: '', values: [20, 40, 50, 60, 100]));
+    $median = '<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="#333" stroke-dasharray="" stroke-width="2" />';
+
+    expect($svg)->toContain($median)
+        ->and(explode($median, $svg)[1])->not->toContain('<text');
 });
 
 it('escapes the label', function () {

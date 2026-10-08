@@ -132,6 +132,11 @@ echo $chart->render();
 The `values` of a boxplot are given in order: min, Q1, median, Q3, max. Any value after the fifth is an outlier and is drawn as a point.
 The library does not compute quartiles: pass the five statistics already calculated.
 
+Two things to keep in mind:
+
+- To draw boxplots on a secondary Y axis, pass the same `yAxis` name to `Boxplots` (it drives the axis range) and to each `Boxplot` (it drives the drawing), as with `Bars` and `Bar`.
+- The default Y axis starts at 0. For negative values, give the chart its own axis, e.g. `yAxis: new YAxis`.
+
 #### Annotations
 
 You can add annotations to your charts for better visualization.

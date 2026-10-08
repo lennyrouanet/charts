@@ -48,7 +48,7 @@ public function __construct(
  */
 public function __construct(
     public string $name,
-    public array $values,
+    array $values,                 // exposé en `public readonly array $values`
     public ?string $yAxis = null,
     public string $color = '#333',
     public float $strokeWidth = 2,
@@ -169,7 +169,16 @@ Le constructeur de `Boxplot` lève une `InvalidArgumentException` :
 - si les cinq premières ne sont pas en ordre croissant (égalités admises) —
   `Boxplot "<name>" values must be ordered: min <= Q1 <= median <= Q3 <= max.`
 
-Les exceptions (valeurs à partir de la sixième) ne sont pas contraintes.
+- si une valeur, exception comprise, n'est pas un nombre fini (`NAN`, `INF`, chaîne, `null`, booléen) —
+  `Boxplot "<name>" values must be finite numbers.`
+- si `width` est négatif — `Boxplot "<name>" width must not be negative.`
+- si `outlierSize` est négatif — `Boxplot "<name>" outlierSize must not be negative.`
+
+L'ordre des exceptions (valeurs à partir de la sixième) n'est pas contraint.
+
+`values` est une propriété `readonly`, normalisée par `array_values()` : elle ne
+peut plus changer après validation. Un `Boxplots` vide renvoie 0 pour
+`minValue()` et `maxValue()`, afin de ne pas faire échouer le `Chart` qui le contient.
 
 C'est la première validation d'entrée de la librairie. Elle est justifiée ici
 parce qu'un ordre invalide produit un `Rect` de hauteur négative, donc un SVG
