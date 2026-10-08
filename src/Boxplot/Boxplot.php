@@ -3,6 +3,12 @@
 namespace Maantje\Charts\Boxplot;
 
 use InvalidArgumentException;
+use Maantje\Charts\Chart;
+use Maantje\Charts\SVG\Circle;
+use Maantje\Charts\SVG\Fragment;
+use Maantje\Charts\SVG\Line;
+use Maantje\Charts\SVG\Rect;
+use Maantje\Charts\SVG\Text;
 
 class Boxplot
 {
@@ -41,6 +47,88 @@ class Boxplot
                 ));
             }
         }
+    }
+
+    public function render(Chart $chart, float $x, float $maxWidth): string
+    {
+        $width = min($this->width ?? $maxWidth, $maxWidth);
+        $x += ($maxWidth - $width) / 2;
+        $centerX = $x + $width / 2;
+        $capHalf = $width / 4;
+
+        [$min, $q1, $median, $q3, $max] = array_map(
+            fn (float $value) => $chart->yForAxis($value, $this->yAxis),
+            array_slice($this->values, 0, 5)
+        );
+
+        $elements = [
+            new Line(
+                x1: $centerX,
+                y1: $min,
+                x2: $centerX,
+                y2: $max,
+                stroke: $this->color,
+                strokeWidth: $this->strokeWidth
+            ),
+            new Line(
+                x1: $centerX - $capHalf,
+                y1: $min,
+                x2: $centerX + $capHalf,
+                y2: $min,
+                stroke: $this->color,
+                strokeWidth: $this->strokeWidth
+            ),
+            new Line(
+                x1: $centerX - $capHalf,
+                y1: $max,
+                x2: $centerX + $capHalf,
+                y2: $max,
+                stroke: $this->color,
+                strokeWidth: $this->strokeWidth
+            ),
+            new Rect(
+                x: $x,
+                y: $q3,
+                width: $width,
+                height: $q1 - $q3,
+                fill: $this->fillColor,
+                stroke: $this->color,
+                strokeWidth: $this->strokeWidth,
+                title: implode(' / ', array_slice($this->values, 0, 5))
+            ),
+            new Line(
+                x1: $x,
+                y1: $median,
+                x2: $x + $width,
+                y2: $median,
+                stroke: $this->medianColor ?? $this->color,
+                strokeWidth: $this->strokeWidth
+            ),
+        ];
+
+        foreach (array_slice($this->values, 5) as $outlier) {
+            $elements[] = new Circle(
+                cx: $centerX,
+                cy: $chart->yForAxis($outlier, $this->yAxis),
+                r: $this->outlierSize,
+                fill: $this->outlierColor ?? $this->color,
+                title: $outlier
+            );
+        }
+
+        if ($this->name !== '') {
+            $elements[] = new Text(
+                content: $this->name,
+                x: $centerX,
+                y: $chart->bottom() + $this->labelMarginY,
+                fontFamily: $chart->fontFamily,
+                fontSize: $chart->fontSize,
+                fill: $this->labelColor,
+                textAnchor: 'middle'
+            );
+        }
+
+        return new Fragment($elements);
     }
 
     public function minValue(): float
