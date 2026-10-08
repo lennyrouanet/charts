@@ -6,7 +6,7 @@
 
 - Simple, intuitive API for chart creation
 - Lightweight, with no external dependencies
-- Supports various chart types: line charts, bar charts, stacked charts, and mixed charts
+- Supports various chart types: line charts, bar charts, stacked charts, boxplots, and mixed charts
 - Fully customizable and extendable
 - Outputs pure SVG, allowing for:
   - Embedding in PDFs (ideal for reports)
@@ -34,6 +34,10 @@ Below are some examples of the types of charts you can create using this library
 ### Simple stacked chart
 ![alt text](./examples/output/simple-stacked-bar-chart.svg)
 [View source](./examples/simple-stacked-bar-chart.php)
+
+### Simple boxplot chart
+![alt text](./examples/output/simple-boxplot-chart.svg)
+[View source](./examples/simple-boxplot-chart.php)
 
 ### Advanced line charts
 ![alt text](./examples/output/advanced-line-chart.svg)
@@ -103,6 +107,30 @@ $chart = new Chart(
 
 echo $chart->render();
 ```
+
+#### Simple Boxplot Chart
+
+```php
+use Maantje\Charts\Boxplot\Boxplot;
+use Maantje\Charts\Boxplot\Boxplots;
+use Maantje\Charts\Chart;
+
+$chart = new Chart(
+    series: [
+        new Boxplots(
+            boxplots: [
+                new Boxplot(name: 'Jan', values: [12, 30, 45, 60, 88]),
+                new Boxplot(name: 'Feb', values: [20, 35, 50, 70, 95, 130, 4]),
+            ],
+        ),
+    ],
+);
+
+echo $chart->render();
+```
+
+The `values` of a boxplot are given in order: min, Q1, median, Q3, max. Any value after the fifth is an outlier and is drawn as a point.
+The library does not compute quartiles: pass the five statistics already calculated.
 
 #### Annotations
 

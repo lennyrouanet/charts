@@ -9,6 +9,8 @@ use Maantje\Charts\Bar\Bar;
 use Maantje\Charts\Bar\Bars;
 use Maantje\Charts\Bar\Segment;
 use Maantje\Charts\Bar\StackedBar;
+use Maantje\Charts\Boxplot\Boxplot;
+use Maantje\Charts\Boxplot\Boxplots;
 use Maantje\Charts\Chart;
 use Maantje\Charts\Line\Line;
 use Maantje\Charts\Line\Lines;
@@ -107,6 +109,28 @@ $chart = new Chart(
                         ),
                     ],
                     percentage: true,
+                ),
+            ],
+        ),
+        new Boxplots(
+            boxplots: [
+                new Boxplot(
+                    name: '',
+                    values: [20, 45, 60, 75, 95, 130],
+                    fillColor: 'white',
+                    width: 40,
+                ),
+                new Boxplot(
+                    name: '',
+                    values: [50, 70, 85, 100, 120],
+                    fillColor: 'white',
+                    width: 40,
+                ),
+                new Boxplot(
+                    name: '',
+                    values: [10, 30, 45, 55, 80, 135],
+                    fillColor: 'white',
+                    width: 40,
                 ),
             ],
         ),
