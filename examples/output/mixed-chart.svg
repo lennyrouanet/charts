@@ -19,21 +19,21 @@
 <text x="651.66666666667" y="540" font-family="Arial" font-size="16" fill="white" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="">57%</text>
 <rect x="601.66666666667" y="287.5" width="100" height="112.5" fill="red" fill-opacity="1" stroke="none" stroke-width="0" rx="0" ry="0"><title>30</title></rect>
 <text x="651.66666666667" y="390" font-family="Arial" font-size="16" fill="white" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="">43%</text>
-<text x="651.66666666667" y="580" font-family="arial" font-size="14" fill="#333" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="">March</text><line x1="178.33333333333" y1="475" x2="178.33333333333" y2="193.75" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<line x1="168.33333333333" y1="475" x2="188.33333333333" y2="475" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<line x1="168.33333333333" y1="193.75" x2="188.33333333333" y2="193.75" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<rect x="158.33333333333" y="268.75" width="40" height="112.5" fill="white" fill-opacity="1" stroke="#333" stroke-width="2" rx="0" ry="0"><title>20 / 45 / 60 / 75 / 95</title></rect>
-<line x1="158.33333333333" y1="325" x2="198.33333333333" y2="325" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<circle cx="178.33333333333" cy="62.5" r="4" fill="#333" stroke="none" stroke-width="0"><title>130</title></circle><line x1="415" y1="362.5" x2="415" y2="100" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<text x="651.66666666667" y="580" font-family="arial" font-size="14" fill="#333" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="">March</text><line x1="178.33333333333" y1="355" x2="178.33333333333" y2="137.5" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<line x1="168.33333333333" y1="355" x2="188.33333333333" y2="355" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<line x1="168.33333333333" y1="137.5" x2="188.33333333333" y2="137.5" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<rect x="158.33333333333" y="212.5" width="40" height="105" fill="white" fill-opacity="1" stroke="#333" stroke-width="2" rx="0" ry="0"><title>52 / 62 / 75 / 90 / 110</title></rect>
+<line x1="158.33333333333" y1="268.75" x2="198.33333333333" y2="268.75" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<circle cx="178.33333333333" cy="43.75" r="4" fill="#333" stroke="none" stroke-width="0"><title>135</title></circle><line x1="415" y1="362.5" x2="415" y2="100" stroke="#333" stroke-dasharray="" stroke-width="2" />
 <line x1="405" y1="362.5" x2="425" y2="362.5" stroke="#333" stroke-dasharray="" stroke-width="2" />
 <line x1="405" y1="100" x2="425" y2="100" stroke="#333" stroke-dasharray="" stroke-width="2" />
 <rect x="395" y="175" width="40" height="112.5" fill="white" fill-opacity="1" stroke="#333" stroke-width="2" rx="0" ry="0"><title>50 / 70 / 85 / 100 / 120</title></rect>
-<line x1="395" y1="231.25" x2="435" y2="231.25" stroke="#333" stroke-dasharray="" stroke-width="2" /><line x1="651.66666666667" y1="512.5" x2="651.66666666667" y2="250" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<line x1="641.66666666667" y1="512.5" x2="661.66666666667" y2="512.5" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<line x1="641.66666666667" y1="250" x2="661.66666666667" y2="250" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<rect x="631.66666666667" y="343.75" width="40" height="93.75" fill="white" fill-opacity="1" stroke="#333" stroke-width="2" rx="0" ry="0"><title>10 / 30 / 45 / 55 / 80</title></rect>
-<line x1="631.66666666667" y1="381.25" x2="671.66666666667" y2="381.25" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<circle cx="651.66666666667" cy="43.75" r="4" fill="#333" stroke="none" stroke-width="0"><title>135</title></circle>
+<line x1="395" y1="231.25" x2="435" y2="231.25" stroke="#333" stroke-dasharray="" stroke-width="2" /><line x1="651.66666666667" y1="355" x2="651.66666666667" y2="156.25" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<line x1="641.66666666667" y1="355" x2="661.66666666667" y2="355" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<line x1="641.66666666667" y1="156.25" x2="661.66666666667" y2="156.25" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<rect x="631.66666666667" y="231.25" width="40" height="93.75" fill="white" fill-opacity="1" stroke="#333" stroke-width="2" rx="0" ry="0"><title>52 / 60 / 72 / 85 / 105</title></rect>
+<line x1="631.66666666667" y1="280" x2="671.66666666667" y2="280" stroke="#333" stroke-dasharray="" stroke-width="2" />
+<circle cx="651.66666666667" cy="62.5" r="4" fill="#333" stroke="none" stroke-width="0"><title>130</title></circle>
     <circle cx="533.33333333333" cy="100" r="10" fill="white" stroke="red" stroke-width="4"><title>120</title></circle>
 <rect x="472.42424242424" y="52.636363636364" width="121.81818181818" height="22" fill="red" fill-opacity="1" stroke="" stroke-width="0" rx="0" ry="0"><title></title></rect>
 <text x="533.33333333333" y="70" font-family="arial" font-size="14" fill="white" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="">Point annotation</text><line x1="60" y1="235" x2="770" y2="235" stroke="blue" stroke-dasharray="" stroke-width="3" />

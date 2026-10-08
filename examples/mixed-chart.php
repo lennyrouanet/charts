@@ -116,7 +116,7 @@ $chart = new Chart(
             boxplots: [
                 new Boxplot(
                     name: '',
-                    values: [20, 45, 60, 75, 95, 130],
+                    values: [52, 62, 75, 90, 110, 135],
                     fillColor: 'white',
                     width: 40,
                 ),
@@ -128,7 +128,7 @@ $chart = new Chart(
                 ),
                 new Boxplot(
                     name: '',
-                    values: [10, 30, 45, 55, 80, 135],
+                    values: [52, 60, 72, 85, 105, 130],
                     fillColor: 'white',
                     width: 40,
                 ),

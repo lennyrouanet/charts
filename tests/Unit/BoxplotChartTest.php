@@ -159,6 +159,19 @@ it('renders nothing when empty', function () {
     expect((new Boxplots)->render(new Chart))->toBe('');
 });
 
+it('does not break a chart when empty', function () {
+    expect((new Chart(series: [new Boxplots]))->render())->toContain('</svg>');
+
+    $chart = new Chart(
+        series: [
+            new Bars(bars: [new Bar(name: 'A', value: 100)]),
+            new Boxplots,
+        ],
+    );
+
+    expect($chart->render())->toContain('<rect x="365" y="25" width="100" height="525" fill="#3498db"');
+});
+
 it('renders the full boxplot chart svg', function () {
     expect(boxplotChart(new Boxplot(name: 'Jan', values: [20, 40, 50, 60, 100])))->toBe(<<<'SVG'
 <svg width="800" height="600"  xmlns="http://www.w3.org/2000/svg">

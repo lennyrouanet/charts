@@ -19,11 +19,19 @@ class Boxplots extends Serie
 
     public function maxValue(): float
     {
+        if (count($this->boxplots) === 0) {
+            return 0;
+        }
+
         return max(array_map(fn (Boxplot $boxplot) => $boxplot->maxValue(), $this->boxplots));
     }
 
     public function minValue(): float
     {
+        if (count($this->boxplots) === 0) {
+            return 0;
+        }
+
         return min(array_map(fn (Boxplot $boxplot) => $boxplot->minValue(), $this->boxplots));
     }
 
