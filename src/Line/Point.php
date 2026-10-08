@@ -8,14 +8,18 @@ use Maantje\Charts\SVG\Fragment;
 class Point
 {
     public function __construct(
-        public readonly float $y,
-        public readonly float $x,
-        public readonly string $color = 'rgba(0, 0, 0, 0)',
+        public float $x,
+        public float $y,
+        public ?string $color = null,
         public int $size = 10,
     ) {}
 
     public function render(float $x, float $y): string
     {
+        if ($this->color === null) {
+            return '';
+        }
+
         return new Fragment([
             new Circle(
                 cx: $x,

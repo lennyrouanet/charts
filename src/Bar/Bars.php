@@ -11,7 +11,7 @@ class Bars extends Serie
      * @param  BarContract[]  $bars
      */
     public function __construct(
-        private readonly array $bars = [],
+        protected array $bars = [],
         public ?string $yAxis = null,
     ) {
         parent::__construct($yAxis);
@@ -19,19 +19,31 @@ class Bars extends Serie
 
     public function maxValue(): float
     {
-        return max(array_map(fn (BarContract $data) => $data->value(), $this->bars));
+        if (count($this->bars) === 0) {
+            return 0;
+        }
+
+        return max(array_map(fn (BarContract $data) => $data->maxValue(), $this->bars));
     }
 
     public function minValue(): float
     {
-        return min(array_map(fn (BarContract $data) => $data->value(), $this->bars));
+        if (count($this->bars) === 0) {
+            return 0;
+        }
+
+        return min(array_map(fn (BarContract $data) => $data->minValue(), $this->bars));
     }
 
     public function render(Chart $chart): string
     {
         $numBars = count($this->bars);
 
-        $maxBarWidth = $chart->availableWidth() / $numBars;
+        $maxBarWidth = 0;
+
+        if ($numBars > 0) {
+            $maxBarWidth = $chart->availableWidth() / $numBars;
+        }
 
         $x = $chart->left();
 

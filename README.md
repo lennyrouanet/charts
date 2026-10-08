@@ -9,7 +9,7 @@
 - Supports various chart types: line charts, bar charts, stacked charts, boxplots, and mixed charts
 - Fully customizable and extendable
 - Outputs pure SVG, allowing for:
-  - Embedding in PDFs (ideal for reports)
+  - Embedding in PDFs, [view example PDF report](https://raw.githubusercontent.com/maantje/charts/refs/heads/main/examples/output/report.pdf)
 
 ## Installation
 
@@ -23,34 +23,75 @@ composer require maantje/charts
 
 Below are some examples of the types of charts you can create using this library. Click on the links to view the source code for each example.
 
-### Simple line chart
-![alt text](./examples/output/simple-line-chart.svg)
-[View source](./examples/simple-line-chart.php)
+- [Example Usage With mPDF](#example-usage-with-mpdf)
+- [Simple Line Chart](#simple-line-chart)
+- [Curved Line Chart](#curved-line-chart)
+- [Step Line Chart](#step-line-chart)
+- [Area Line Chart](#area-line-chart)
+- [Bar Chart](#bar-chart)
+- [Stacked Bar Chart](#stacked-bar-chart)
+- [Grouped Bar Chart](#grouped-bar-chart)
+- [Advanced Line Chart](#advanced-line-chart)
+- [Advanced Bar Chart](#advanced-bar-chart)
+- [Mixed Chart](#mixed-chart)
+- [Negative Values Chart](#negative-values-chart)
+- [Pie Chart](#pie-chart)
 
-### Simple bar chart
-![alt text](./examples/output/simple-bar-chart.svg)
-[View source](./examples/simple-bar-chart.php)
+### Example Usage With mPDF
+[📄 View PDF document](https://raw.githubusercontent.com/maantje/charts/refs/heads/main/examples/output/report.pdf)  
+[View source](./examples/pdf/mpdf.php)
 
-### Simple stacked chart
-![alt text](./examples/output/simple-stacked-bar-chart.svg)
-[View source](./examples/simple-stacked-bar-chart.php)
+### Simple Line Chart
+![Simple Line Chart](./examples/output/line-chart.svg)  
+[View source](./examples/line-chart.php)
 
-### Simple boxplot chart
-![alt text](./examples/output/simple-boxplot-chart.svg)
-[View source](./examples/simple-boxplot-chart.php)
+### Curved Line Chart
+![Curved Line Chart](./examples/output/curved-line-chart.svg)  
+[View source](./examples/curved-line-chart.php)
 
-### Advanced line charts
-![alt text](./examples/output/advanced-line-chart.svg)
+### Step line chart
+![Step line chart](./examples/output/step-line-chart.svg)  
+[View source](./examples/step-line-chart.php)
+
+### Area line chart
+![Area line chart](./examples/output/area-line-chart.svg)  
+[View source](./examples/area-line-chart.php)
+
+### Bar Chart
+![Bar Chart](./examples/output/bar-chart.svg)  
+[View source](./examples/bar-chart.php)
+
+### Stacked Bar Chart
+![Stacked Bar Chart](./examples/output/stacked-bar-chart.svg)  
+[View source](./examples/stacked-bar-chart.php)
+
+### Grouped Bar Chart
+![Grouped Bar Chart](./examples/output/grouped-bar-chart.svg)  
+[View source](./examples/grouped-bar-chart.php)
+
+### Advanced Line Chart
+![Advanced Line Chart](./examples/output/advanced-line-chart.svg)  
 [View source](./examples/advanced-line-chart.php)
 
-### Advanced bar chart
-![alt text](./examples/output/advanced-bar-chart.svg)
+### Advanced Bar Chart
+![Advanced Bar Chart](./examples/output/advanced-bar-chart.svg)  
 [View source](./examples/advanced-bar-chart.php)
 
 ### Mixed chart
-![alt text](./examples/output/mixed-chart.svg)
+![Mixed chart](./examples/output/mixed-chart.svg)  
 [View source](./examples/mixed-chart.php)
 
+### Negative Values Chart
+![Negative Values Chart](./examples/output/negative-values-chart.svg)  
+[View source](./examples/negative-values-chart.php)
+
+### Simple boxplot chart
+![Boxplot chart](./examples/output/simple-boxplot-chart.svg)
+[View source](./examples/simple-boxplot-chart.php)
+
+### Pie chart
+![Pie chart](./examples/output/pie-chart.svg)  
+[View source](./examples/pie-chart.php)
 
 ## Usage
 
@@ -94,10 +135,18 @@ $chart = new Chart(
             lines: [
                 new Line(
                     points: [
-                        new Point(y: 0, x: 0),
-                        new Point(y: 4, x: 100),
-                        new Point(y: 12, x: 200),
-                        new Point(y: 8, x: 300),
+                        new Point(x: 0, y: 0),
+                        new Point(x: 100, y: 4),
+                        new Point(x: 200, y: 12),
+                        new Point(x: 300, y: 8),
+                    ],
+                ),
+                new Line(
+                    points: [
+                        [0, 0],
+                        [100, 4],
+                        [200, 12],
+                        [300, 8],
                     ],
                 ),
             ],
