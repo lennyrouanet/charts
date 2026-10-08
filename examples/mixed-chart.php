@@ -118,19 +118,19 @@ $chart = new Chart(
             boxplots: [
                 new Boxplot(
                     name: '',
-                    values: [52, 62, 75, 90, 110, 135],
+                    values: [5200, 6200, 7500, 9000, 11000, 13500],
                     fillColor: 'white',
                     width: 40,
                 ),
                 new Boxplot(
                     name: '',
-                    values: [50, 70, 85, 100, 120],
+                    values: [5000, 7000, 8500, 10000, 12000],
                     fillColor: 'white',
                     width: 40,
                 ),
                 new Boxplot(
                     name: '',
-                    values: [52, 60, 72, 85, 105, 130],
+                    values: [5200, 6000, 7200, 8500, 10500, 13000],
                     fillColor: 'white',
                     width: 40,
                 ),

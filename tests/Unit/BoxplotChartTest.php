@@ -88,16 +88,16 @@ it('renders negative values on a y axis without a fixed minimum', function () {
 it('renders a boxplot', function () {
     $svg = boxplotChart(new Boxplot(name: 'Jan', values: [20, 40, 50, 60, 100]));
 
-    $whisker = '<line x1="415" y1="445" x2="415" y2="25" stroke="#333" stroke-dasharray="" stroke-width="2" />';
+    $whisker = '<line x1="415" y1="445" x2="415" y2="25" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />';
     $box = '<rect x="385" y="235" width="60" height="105" fill="#3498db" fill-opacity="1" stroke="#333" stroke-width="2" rx="0" ry="0"><title>20 / 40 / 50 / 60 / 100</title></rect>';
 
     expect($svg)
         ->toContain($whisker)
-        ->toContain('<line x1="400" y1="445" x2="430" y2="445" stroke="#333" stroke-dasharray="" stroke-width="2" />')
-        ->toContain('<line x1="400" y1="25" x2="430" y2="25" stroke="#333" stroke-dasharray="" stroke-width="2" />')
+        ->toContain('<line x1="400" y1="445" x2="430" y2="445" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />')
+        ->toContain('<line x1="400" y1="25" x2="430" y2="25" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />')
         ->toContain($box)
-        ->toContain('<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="#333" stroke-dasharray="" stroke-width="2" />')
-        ->toContain('<text x="415" y="580" font-family="arial" font-size="14" fill="#333" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="">Jan</text>')
+        ->toContain('<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />')
+        ->toContain('<text x="415" y="580" font-family="arial" font-size="14" fill="#333" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="auto">Jan</text>')
         ->and((int) strpos($svg, $whisker))->toBeLessThan((int) strpos($svg, $box));
 
     expect($svg)->not->toContain('<circle');
@@ -129,7 +129,7 @@ it('applies styling parameters', function () {
 
     expect($svg)
         ->toContain('fill="yellow" fill-opacity="1" stroke="black" stroke-width="3"')
-        ->toContain('<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="red" stroke-dasharray="" stroke-width="3" />')
+        ->toContain('<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="red" stroke-dasharray="none" stroke-width="3" stroke-opacity="1.000000" />')
         ->toContain('<circle cx="415" cy="497.5" r="6" fill="green"')
         ->toContain('<text x="415" y="570" font-family="arial" font-size="14" fill="blue"');
 });
@@ -142,7 +142,7 @@ it('fills the slot when width is null and never exceeds it', function (?float $w
 
 it('omits the label when name is empty', function () {
     $svg = boxplotChart(new Boxplot(name: '', values: [20, 40, 50, 60, 100]));
-    $median = '<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="#333" stroke-dasharray="" stroke-width="2" />';
+    $median = '<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />';
 
     expect($svg)->toContain($median)
         ->and(explode($median, $svg)[1])->not->toContain('<text');
@@ -216,18 +216,18 @@ it('does not break a chart when empty', function () {
 
 it('renders the full boxplot chart svg', function () {
     expect(boxplotChart(new Boxplot(name: 'Jan', values: [20, 40, 50, 60, 100])))->toBe(<<<'SVG'
-<svg width="800" height="600"  xmlns="http://www.w3.org/2000/svg">
-    <rect x="0" y="0" width="800" height="600" fill="white" fill-opacity="1" stroke="none" stroke-width="0" rx="0" ry="0"><title></title></rect>
-    <text x="50" y="555" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="">0</text><text x="50" y="450" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="">20</text><text x="50" y="345" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="">40</text><text x="50" y="240" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="">60</text><text x="50" y="135" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="">80</text><text x="50" y="30" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="">100</text><text x="20" y="262.5" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="middle" transform="rotate(270, 20, 262.5)"></text>
-    <line x1="60" y1="550" x2="770" y2="550" stroke="black" stroke-dasharray="" stroke-width="1" /><text x="415" y="590" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline=""></text>
-    <line x1="60" y1="550" x2="770" y2="550" stroke="#ccc" stroke-dasharray="" stroke-width="1" /><line x1="60" y1="445" x2="770" y2="445" stroke="#ccc" stroke-dasharray="" stroke-width="1" /><line x1="60" y1="340" x2="770" y2="340" stroke="#ccc" stroke-dasharray="" stroke-width="1" /><line x1="60" y1="235" x2="770" y2="235" stroke="#ccc" stroke-dasharray="" stroke-width="1" /><line x1="60" y1="130" x2="770" y2="130" stroke="#ccc" stroke-dasharray="" stroke-width="1" /><line x1="60" y1="25" x2="770" y2="25" stroke="#ccc" stroke-dasharray="" stroke-width="1" />
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+    <rect x="0" y="0" width="800" height="600" fill="white" fill-opacity="1" stroke="none" stroke-width="0" rx="0" ry="0"/>
+    <text x="50" y="555" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="auto">0</text><text x="50" y="450" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="auto">20</text><text x="50" y="345" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="auto">40</text><text x="50" y="240" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="auto">60</text><text x="50" y="135" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="auto">80</text><text x="50" y="30" font-family="arial" font-size="14" fill="black" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="alphabetic" alignment-baseline="auto">100</text>
+    <line x1="60" y1="550" x2="770" y2="550" stroke="black" stroke-dasharray="none" stroke-width="1" stroke-opacity="1.000000" />
+    <line x1="60" y1="445" x2="770" y2="445" stroke="black" stroke-dasharray="none" stroke-width="1" stroke-opacity="0.200000" /><line x1="60" y1="340" x2="770" y2="340" stroke="black" stroke-dasharray="none" stroke-width="1" stroke-opacity="0.200000" /><line x1="60" y1="235" x2="770" y2="235" stroke="black" stroke-dasharray="none" stroke-width="1" stroke-opacity="0.200000" /><line x1="60" y1="130" x2="770" y2="130" stroke="black" stroke-dasharray="none" stroke-width="1" stroke-opacity="0.200000" /><line x1="60" y1="25" x2="770" y2="25" stroke="black" stroke-dasharray="none" stroke-width="1" stroke-opacity="0.200000" />
     
-    <line x1="415" y1="445" x2="415" y2="25" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<line x1="400" y1="445" x2="430" y2="445" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<line x1="400" y1="25" x2="430" y2="25" stroke="#333" stroke-dasharray="" stroke-width="2" />
+    <line x1="415" y1="445" x2="415" y2="25" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />
+<line x1="400" y1="445" x2="430" y2="445" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />
+<line x1="400" y1="25" x2="430" y2="25" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />
 <rect x="385" y="235" width="60" height="105" fill="#3498db" fill-opacity="1" stroke="#333" stroke-width="2" rx="0" ry="0"><title>20 / 40 / 50 / 60 / 100</title></rect>
-<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="#333" stroke-dasharray="" stroke-width="2" />
-<text x="415" y="580" font-family="arial" font-size="14" fill="#333" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="">Jan</text>
+<line x1="385" y1="287.5" x2="445" y2="287.5" stroke="#333" stroke-dasharray="none" stroke-width="2" stroke-opacity="1.000000" />
+<text x="415" y="580" font-family="arial" font-size="14" fill="#333" stroke="none" stroke-width="0" text-anchor="middle" dominant-baseline="alphabetic" alignment-baseline="auto">Jan</text>
     
 </svg>
 SVG);
