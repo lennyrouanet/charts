@@ -89,6 +89,10 @@ Below are some examples of the types of charts you can create using this library
 ![Boxplot chart](./examples/output/simple-boxplot-chart.svg)
 [View source](./examples/simple-boxplot-chart.php)
 
+### Boxplot chart with a line
+![Boxplot chart with a line](./examples/output/boxplot-line-chart.svg)
+[View source](./examples/boxplot-line-chart.php)
+
 ### Pie chart
 ![Pie chart](./examples/output/pie-chart.svg)  
 [View source](./examples/pie-chart.php)
@@ -185,6 +189,30 @@ Two things to keep in mind:
 
 - To draw boxplots on a secondary Y axis, pass the same `yAxis` name to `Boxplots` (it drives the axis range) and to each `Boxplot` (it drives the drawing), as with `Bars` and `Bar`.
 - The default Y axis starts at 0. For negative values, give the chart its own axis, e.g. `yAxis: new YAxis`.
+
+#### Line over boxplots or bars
+
+A regular `Line` places its points on the numeric X axis scale, so they do not line up with boxplots or bars, which sit in equal slots.
+Use a `SlotLine` instead: it takes one value per slot, in order, places each one at the centre of its slot and adds no scale to the X axis.
+
+```php
+use Maantje\Charts\Line\Lines;
+use Maantje\Charts\Line\SlotLine;
+
+$chart = new Chart(
+    series: [
+        new Boxplots(boxplots: [/* three boxplots */]),
+        new Lines(
+            lines: [
+                new SlotLine(values: [48, 56, 41], color: 'red', pointColor: 'red'),
+            ],
+        ),
+    ],
+);
+```
+
+Give it as many values as there are boxplots or bars, and list the `Lines` after them so the line is drawn on top.
+`SlotLine` accepts the same `size`, `yAxis`, `color`, `areaColor`, `curve` and `stepLine` options as `Line`; points are drawn only when `pointColor` is set.
 
 #### Annotations
 
