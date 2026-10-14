@@ -16,11 +16,13 @@ class YAxis implements Renderable
     public function __construct(
         public string $name = 'default',
         public string $title = '',
-        public string $color = 'black',
         public ?float $minValue = null,
         public ?float $maxValue = null,
-        public int $labelMargin = 0,
+        public ?string $color = null,
         public array $annotations = [],
+        public int $fontSize = 14,
+        public ?string $fontFamily = null,
+        public int $labelMargin = 0,
         public int $characterSize = 5,
         ?Closure $formatter = null
     ) {
@@ -43,14 +45,14 @@ class YAxis implements Renderable
 
         $chart->incrementLeftMargin($labelWidth + $titleMargin);
 
-        $minValue = $chart->minValue($this->name); // Get min value
-        $maxValue = $chart->maxValue($this->name); // Get max value
+        $minValue = $chart->minValue($this->name);
+        $maxValue = $chart->maxValue($this->name);
 
-        $valueRange = $maxValue - $minValue; // Calculate the range between min and max
-        $valueStep = $valueRange / $numLines; // Calculate the step for each line
+        $valueRange = $maxValue - $minValue;
+        $valueStep = $valueRange / $numLines;
 
         for ($i = 0; $i <= $numLines; $i++) {
-            $value = $minValue + ($valueStep * $i); // Adjust value calculation to start from min value
+            $value = $minValue + ($valueStep * $i);
 
             $labelText = $this->formatter->call($this, $value);
             $labelX = $chart->left() - 10;
@@ -60,9 +62,9 @@ class YAxis implements Renderable
                 content: $labelText,
                 x: $labelX,
                 y: $labelY,
-                fontFamily: $chart->fontFamily,
-                fontSize: $chart->fontSize,
-                fill: $this->color,
+                fontFamily: $this->fontFamily ?? $chart->fontFamily,
+                fontSize: $this->fontSize ?? $chart->fontSize,
+                fill: $this->color ?? $chart->color,
                 textAnchor: 'end'
             );
         }
@@ -74,9 +76,9 @@ class YAxis implements Renderable
             content: $this->title,
             x: $titleX,
             y: $titleY,
-            fontFamily: $chart->fontFamily,
-            fontSize: $chart->fontSize,
-            fill: $this->color,
+            fontFamily: $this->fontFamily ?? $chart->fontFamily,
+            fontSize: $this->fontSize ?? $chart->fontSize,
+            fill: $this->color ?? $chart->color,
             textAnchor: 'middle',
             alignmentBaseline: 'middle',
             transform: "rotate(270, $titleX, $titleY)"

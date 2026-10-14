@@ -18,7 +18,12 @@ class XAxis implements Renderable
     public function __construct(
         public array $data = [],
         public string $title = '',
+        public ?float $minValue = null,
+        public ?float $maxValue = null,
         public array $annotations = [],
+        public ?string $color = null,
+        public int $fontSize = 14,
+        public ?string $fontFamily = null,
         ?Closure $formatter = null
     ) {
         $this->formatter = $formatter ?? fn (mixed $label) => number_format($label);
@@ -26,11 +31,27 @@ class XAxis implements Renderable
 
     public function maxValue(): float
     {
+        if ($this->maxValue !== null) {
+            return $this->maxValue;
+        }
+
+        if (count($this->data) === 0) {
+            return 0;
+        }
+
         return max(array_map(fn (float $data) => $data, $this->data));
     }
 
     public function minValue(): float
     {
+        if ($this->minValue !== null) {
+            return $this->minValue;
+        }
+
+        if (count($this->data) === 0) {
+            return 0;
+        }
+
         return min(array_map(fn (float $data) => $data, $this->data));
     }
 
@@ -43,7 +64,7 @@ class XAxis implements Renderable
             y1: $chart->bottom(),
             x2: $chart->right(),
             y2: $chart->bottom(),
-            stroke: 'black'
+            stroke: $this->color ?? $chart->color,
         );
 
         for ($i = 0; $i < $labelCount; $i++) {
@@ -58,8 +79,9 @@ class XAxis implements Renderable
                     content: $label,
                     x: $x,
                     y: $y,
-                    fontFamily: $chart->fontFamily,
-                    fontSize: $chart->fontSize,
+                    fontFamily: $this->fontFamily ?? $chart->fontFamily,
+                    fontSize: $this->fontSize ?? $chart->fontSize,
+                    fill: $this->color ?? $chart->color,
                     textAnchor: 'middle'
                 ),
                 new Line(
@@ -67,21 +89,21 @@ class XAxis implements Renderable
                     y1: $chart->bottom(),
                     x2: $x,
                     y2: $lineY,
-                    stroke: 'black'
-                )
+                    stroke: $this->color ?? $chart->color
+                ),
             ]);
         }
 
         $titleX = $chart->availableWidth() / 2 + $chart->left();
         $titleY = $chart->bottom() + 40;
 
-
         $svg .= new Text(
             content: $this->title,
             x: $titleX,
             y: $titleY,
-            fontFamily: $chart->fontFamily,
-            fontSize: $chart->fontSize,
+            fontFamily: $this->fontFamily ?? $chart->fontFamily,
+            fontSize: $this->fontSize ?? $chart->fontSize,
+            fill: $this->color ?? $chart->color,
             textAnchor: 'middle',
         );
 

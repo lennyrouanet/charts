@@ -5,7 +5,6 @@ namespace Maantje\Charts;
 use Maantje\Charts\Annotations\RendersAfterSeries;
 use Maantje\Charts\Annotations\RendersBeforeSeries;
 use Maantje\Charts\Line\Lines;
-use Maantje\Charts\Line\Point;
 use Maantje\Charts\SVG\Rect;
 
 class Chart
@@ -21,6 +20,8 @@ class Chart
      */
     public array $yAxis = [];
 
+    protected float $initialLeftMargin;
+
     /**
      * @param  Serie[]  $series
      * @param  Renderable[]  $annotations
@@ -30,12 +31,11 @@ class Chart
         protected float $width = 800,
         protected float $height = 600,
         public ?string $background = 'white',
+        public string $color = 'black',
         public int $fontSize = 14,
         public string $fontFamily = 'arial',
-        public readonly Grid $grid = new Grid,
-        YAxis|array $yAxis = new YAxis(
-            minValue: 0,
-        ),
+        public Grid $grid = new Grid,
+        YAxis|array $yAxis = new YAxis,
         public XAxis $xAxis = new XAxis,
         public array $annotations = [],
         public array $series = [],
@@ -43,7 +43,10 @@ class Chart
         protected float $rightMargin = 30,
         protected float $bottomMargin = 50,
         protected float $topMargin = 25,
+        protected ?string $viewBox = null,
     ) {
+        $this->initialLeftMargin = $this->leftMargin;
+
         $this->yAxis = is_array($yAxis) ? $yAxis : [$yAxis];
         $this->yAxis = array_reduce($this->yAxis, function (array $carry, YAxis $yAxis) {
             $carry[$yAxis->name ?? 'default'] = $yAxis;
@@ -58,12 +61,18 @@ class Chart
         if (count($this->xAxis->data) === 0) {
             $this->guessXAxisData();
         }
+
+        if (is_null($this->viewBox)) {
+            $this->viewBox = "0 0 $this->width $this->height";
+        }
     }
 
     public function render(): string
     {
+        $this->leftMargin = $this->initialLeftMargin;
+
         return <<<SVG
-            <svg width="$this->width" height="$this->height"  xmlns="http://www.w3.org/2000/svg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="$this->width" height="$this->height" viewBox="$this->viewBox">
                 {$this->background()}
                 {$this->renderYAxis()}
                 {$this->xAxis->render($this)}
@@ -88,12 +97,28 @@ class Chart
 
     public function xFor(float $x): float
     {
-        return $this->leftMargin + (($x - $this->xAxis->minValue()) / ($this->xAxis->maxValue() - $this->xAxis->minValue())) * ($this->width - $this->leftMargin - $this->rightMargin);
+        $minValue = $this->xAxis->minValue();
+        $maxValue = $this->xAxis->maxValue();
+        $range = $maxValue - $minValue;
+
+        if ($range === 0.0) {
+            return $this->leftMargin;
+        }
+
+        return $this->leftMargin + (($x - $minValue) / $range) * ($this->width - $this->leftMargin - $this->rightMargin);
     }
 
     public function yForAxis(float $y, ?string $axis = null): float
     {
-        return $this->topMargin + $this->availableHeight() - (($y - $this->minValue($axis)) / ($this->maxValue($axis) - $this->minValue($axis))) * ($this->availableHeight());
+        $minValue = $this->minValue($axis);
+        $maxValue = $this->maxValue($axis);
+        $range = $maxValue - $minValue;
+
+        if ($range === 0.0) {
+            return $this->topMargin;
+        }
+
+        return max($this->topMargin, $this->topMargin + $this->availableHeight() - (($y - $minValue) / $range) * $this->availableHeight());
     }
 
     protected function renderSeries(): string
@@ -139,7 +164,11 @@ class Chart
 
         $filtered = array_filter($this->series, fn ($element) => ($element->yAxis ?? 'default') === $yAxis);
 
-        return $this->maxValue[$yAxis] = max(array_map(fn ($element) => $element->maxValue(), $filtered));
+        if (count($filtered) === 0) {
+            return 0;
+        }
+
+        return $this->maxValue[$yAxis] = max(0, ...array_map(fn ($element) => $element->maxValue(), $filtered));
     }
 
     public function minValue(?string $yAxis = null): float
@@ -156,7 +185,13 @@ class Chart
 
         $filtered = array_filter($this->series, fn ($element) => ($element->yAxis ?? 'default') === $yAxis);
 
-        return $this->minValue[$yAxis] = min(array_map(fn ($element) => $element->minValue(), $filtered));
+        if (count($filtered) === 0) {
+            return 0;
+        }
+
+        $dataMin = min(array_map(fn ($element) => $element->minValue(), $filtered));
+
+        return $this->minValue[$yAxis] = $dataMin < 0 ? $dataMin : min(0, $dataMin);
     }
 
     protected function background(): string
@@ -207,16 +242,25 @@ class Chart
         $this->leftMargin += $value;
     }
 
+    public function zeroLineY(?string $axis = null): float
+    {
+        return $this->yForAxis(0, $axis);
+    }
+
     protected function guessXAxisData(): void
     {
         if (count($this->series) === 0) {
             return;
         }
 
-        $firstSeries = $this->series[0];
-
-        if ($firstSeries instanceof Lines) {
-            $this->xAxis->data = array_map(fn (Point $point) => $point->x, $firstSeries->lines[0]->points);
+        foreach ($this->series as $series) {
+            if ($series instanceof Lines) {
+                foreach ($series->lines as $line) {
+                    if (count($line->xPoints()) > count($this->xAxis->data)) {
+                        $this->xAxis->data = $line->xPoints();
+                    }
+                }
+            }
         }
     }
 }

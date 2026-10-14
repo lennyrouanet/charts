@@ -17,12 +17,17 @@
     "scripts": {
         "examples": [
             "cd examples && for example in *.php; do php \"$example\" > \"./output/$(basename \"${example%.php}.svg\")\"; done"
+        ],
+        "pdf": [
+            "cd examples/pdf && php mpdf.php > ../output/report.pdf"
         ]
     },
     "require-dev": {
         "pestphp/pest": "^2.35",
         "phpstan/phpstan": "^1.12",
-        "laravel/pint": "^1.17"
+        "laravel/pint": "^1.17",
+        "symfony/var-dumper": "^7.2",
+        "mpdf/mpdf": "^8.2"
     },
     "config": {
         "allow-plugins": {

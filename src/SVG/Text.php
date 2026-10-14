@@ -7,22 +7,20 @@ use Stringable;
 class Text implements Stringable
 {
     public function __construct(
-        private null|int|float|string $content,
-        private float $x = 0,
-        private float $y = 0,
-        private string $fontFamily = 'Arial',
-        private int $fontSize = 16,
-        private string $fill = 'black',
-        private string $stroke = 'none',
-        private float $strokeWidth = 0,
-        private string $textAnchor = 'start',
-        private string $dominantBaseline = 'alphabetic',
-        private string $alignmentBaseline = '',
-        private ?string $transform = null
+        protected null|int|float|string $content,
+        protected float $x = 0,
+        protected float $y = 0,
+        protected string $fontFamily = 'Arial',
+        protected int $fontSize = 16,
+        protected string $fill = 'black',
+        protected string $stroke = 'none',
+        protected float $strokeWidth = 0,
+        protected string $textAnchor = 'start',
+        protected string $dominantBaseline = 'alphabetic',
+        protected string $alignmentBaseline = 'auto',
+        protected ?string $transform = null
     ) {
-        if (is_null($this->content)) {
-            $this->content = '';
-        }
+        //
     }
 
     public function __toString(): string
@@ -43,6 +41,10 @@ class Text implements Stringable
 
         if ($this->transform) {
             $attributes .= sprintf(' transform="%s"', htmlspecialchars($this->transform, ENT_QUOTES));
+        }
+
+        if ($this->content === null || $this->content === '') {
+            return '';
         }
 
         return sprintf('<text %s>%s</text>', $attributes, htmlspecialchars((string) $this->content, ENT_QUOTES));

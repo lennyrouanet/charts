@@ -6,10 +6,10 @@
 
 - Simple, intuitive API for chart creation
 - Lightweight, with no external dependencies
-- Supports various chart types: line charts, bar charts, stacked charts, and mixed charts
+- Supports various chart types: line charts, bar charts, stacked charts, boxplots, and mixed charts
 - Fully customizable and extendable
 - Outputs pure SVG, allowing for:
-  - Embedding in PDFs (ideal for reports)
+  - Embedding in PDFs, [view example PDF report](https://raw.githubusercontent.com/maantje/charts/refs/heads/main/examples/output/report.pdf)
 
 ## Installation
 
@@ -23,30 +23,79 @@ composer require maantje/charts
 
 Below are some examples of the types of charts you can create using this library. Click on the links to view the source code for each example.
 
-### Simple line chart
-![alt text](./examples/output/simple-line-chart.svg)
-[View source](./examples/simple-line-chart.php)
+- [Example Usage With mPDF](#example-usage-with-mpdf)
+- [Simple Line Chart](#simple-line-chart)
+- [Curved Line Chart](#curved-line-chart)
+- [Step Line Chart](#step-line-chart)
+- [Area Line Chart](#area-line-chart)
+- [Bar Chart](#bar-chart)
+- [Stacked Bar Chart](#stacked-bar-chart)
+- [Grouped Bar Chart](#grouped-bar-chart)
+- [Advanced Line Chart](#advanced-line-chart)
+- [Advanced Bar Chart](#advanced-bar-chart)
+- [Mixed Chart](#mixed-chart)
+- [Negative Values Chart](#negative-values-chart)
+- [Pie Chart](#pie-chart)
 
-### Simple bar chart
-![alt text](./examples/output/simple-bar-chart.svg)
-[View source](./examples/simple-bar-chart.php)
+### Example Usage With mPDF
+[📄 View PDF document](https://raw.githubusercontent.com/maantje/charts/refs/heads/main/examples/output/report.pdf)  
+[View source](./examples/pdf/mpdf.php)
 
-### Simple stacked chart
-![alt text](./examples/output/simple-stacked-bar-chart.svg)
-[View source](./examples/simple-stacked-bar-chart.php)
+### Simple Line Chart
+![Simple Line Chart](./examples/output/line-chart.svg)  
+[View source](./examples/line-chart.php)
 
-### Advanced line charts
-![alt text](./examples/output/advanced-line-chart.svg)
+### Curved Line Chart
+![Curved Line Chart](./examples/output/curved-line-chart.svg)  
+[View source](./examples/curved-line-chart.php)
+
+### Step line chart
+![Step line chart](./examples/output/step-line-chart.svg)  
+[View source](./examples/step-line-chart.php)
+
+### Area line chart
+![Area line chart](./examples/output/area-line-chart.svg)  
+[View source](./examples/area-line-chart.php)
+
+### Bar Chart
+![Bar Chart](./examples/output/bar-chart.svg)  
+[View source](./examples/bar-chart.php)
+
+### Stacked Bar Chart
+![Stacked Bar Chart](./examples/output/stacked-bar-chart.svg)  
+[View source](./examples/stacked-bar-chart.php)
+
+### Grouped Bar Chart
+![Grouped Bar Chart](./examples/output/grouped-bar-chart.svg)  
+[View source](./examples/grouped-bar-chart.php)
+
+### Advanced Line Chart
+![Advanced Line Chart](./examples/output/advanced-line-chart.svg)  
 [View source](./examples/advanced-line-chart.php)
 
-### Advanced bar chart
-![alt text](./examples/output/advanced-bar-chart.svg)
+### Advanced Bar Chart
+![Advanced Bar Chart](./examples/output/advanced-bar-chart.svg)  
 [View source](./examples/advanced-bar-chart.php)
 
 ### Mixed chart
-![alt text](./examples/output/mixed-chart.svg)
+![Mixed chart](./examples/output/mixed-chart.svg)  
 [View source](./examples/mixed-chart.php)
 
+### Negative Values Chart
+![Negative Values Chart](./examples/output/negative-values-chart.svg)  
+[View source](./examples/negative-values-chart.php)
+
+### Simple boxplot chart
+![Boxplot chart](./examples/output/simple-boxplot-chart.svg)
+[View source](./examples/simple-boxplot-chart.php)
+
+### Boxplot chart with a line
+![Boxplot chart with a line](./examples/output/boxplot-line-chart.svg)
+[View source](./examples/boxplot-line-chart.php)
+
+### Pie chart
+![Pie chart](./examples/output/pie-chart.svg)  
+[View source](./examples/pie-chart.php)
 
 ## Usage
 
@@ -90,10 +139,18 @@ $chart = new Chart(
             lines: [
                 new Line(
                     points: [
-                        new Point(y: 0, x: 0),
-                        new Point(y: 4, x: 100),
-                        new Point(y: 12, x: 200),
-                        new Point(y: 8, x: 300),
+                        new Point(x: 0, y: 0),
+                        new Point(x: 100, y: 4),
+                        new Point(x: 200, y: 12),
+                        new Point(x: 300, y: 8),
+                    ],
+                ),
+                new Line(
+                    points: [
+                        [0, 0],
+                        [100, 4],
+                        [200, 12],
+                        [300, 8],
                     ],
                 ),
             ],
@@ -103,6 +160,59 @@ $chart = new Chart(
 
 echo $chart->render();
 ```
+
+#### Simple Boxplot Chart
+
+```php
+use Maantje\Charts\Boxplot\Boxplot;
+use Maantje\Charts\Boxplot\Boxplots;
+use Maantje\Charts\Chart;
+
+$chart = new Chart(
+    series: [
+        new Boxplots(
+            boxplots: [
+                new Boxplot(name: 'Jan', values: [12, 30, 45, 60, 88]),
+                new Boxplot(name: 'Feb', values: [20, 35, 50, 70, 95, 130, 4]),
+            ],
+        ),
+    ],
+);
+
+echo $chart->render();
+```
+
+The `values` of a boxplot are given in order: min, Q1, median, Q3, max. Any value after the fifth is an outlier and is drawn as a point.
+The library does not compute quartiles: pass the five statistics already calculated.
+
+Two things to keep in mind:
+
+- To draw boxplots on a secondary Y axis, pass the same `yAxis` name to `Boxplots` (it drives the axis range) and to each `Boxplot` (it drives the drawing), as with `Bars` and `Bar`.
+- The default Y axis starts at 0. For negative values, give the chart its own axis, e.g. `yAxis: new YAxis`.
+
+#### Line over boxplots or bars
+
+A regular `Line` places its points on the numeric X axis scale, so they do not line up with boxplots or bars, which sit in equal slots.
+Use a `SlotLine` instead: it takes one value per slot, in order, places each one at the centre of its slot and adds no scale to the X axis.
+
+```php
+use Maantje\Charts\Line\Lines;
+use Maantje\Charts\Line\SlotLine;
+
+$chart = new Chart(
+    series: [
+        new Boxplots(boxplots: [/* three boxplots */]),
+        new Lines(
+            lines: [
+                new SlotLine(values: [48, 56, 41], color: 'red', pointColor: 'red'),
+            ],
+        ),
+    ],
+);
+```
+
+Give it as many values as there are boxplots or bars, and list the `Lines` after them so the line is drawn on top.
+`SlotLine` accepts the same `size`, `yAxis`, `color`, `areaColor`, `curve` and `stepLine` options as `Line`; points are drawn only when `pointColor` is set.
 
 #### Annotations
 

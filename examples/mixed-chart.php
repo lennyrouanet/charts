@@ -9,7 +9,10 @@ use Maantje\Charts\Bar\Bar;
 use Maantje\Charts\Bar\Bars;
 use Maantje\Charts\Bar\Segment;
 use Maantje\Charts\Bar\StackedBar;
+use Maantje\Charts\Boxplot\Boxplot;
+use Maantje\Charts\Boxplot\Boxplots;
 use Maantje\Charts\Chart;
+use Maantje\Charts\Formatter;
 use Maantje\Charts\Line\Line;
 use Maantje\Charts\Line\Lines;
 use Maantje\Charts\Line\Point;
@@ -21,7 +24,7 @@ $chart = new Chart(
         annotations: [
             new PointAnnotation(
                 x: 200,
-                y: 120,
+                y: 12000,
                 markerSize: 10,
                 markerBackgroundColor: 'white',
                 markerBorderColor: 'red',
@@ -29,13 +32,14 @@ $chart = new Chart(
                 label: 'Point annotation',
             ),
             new YAxisLineAnnotation(
-                y: 84,
+                y: 8400,
                 color: 'blue',
                 size: 3,
                 label: 'Y Axis annotation',
                 labelColor: 'white',
             ),
-        ]
+        ],
+        formatter: Formatter::number('nl_NL', 2)
     ),
     xAxis: new XAxis(
         annotations: [
@@ -45,27 +49,27 @@ $chart = new Chart(
                 color: 'pink',
                 label: 'X Axis range annotation'
             ),
-        ]
+        ],
     ),
     series: [
         new Lines(
             lines: [
                 new Line(
                     points: [
-                        new Point(y: 0, x: 0),
-                        new Point(y: 40, x: 100),
-                        new Point(y: 120, x: 200),
-                        new Point(y: 80, x: 300),
+                        new Point(x: 0, y: 0),
+                        new Point(x: 100, y: 4000),
+                        new Point(x: 200, y: 12000),
+                        new Point(x: 300, y: 8000),
                     ],
                 ),
                 new Line(
                     points: [
-                        new Point(y: 0, x: 0),
-                        new Point(y: 120, x: 100),
-                        new Point(y: 140, x: 200),
-                        new Point(y: 70, x: 300),
+                        new Point(x: 0, y: 0),
+                        new Point(x: 100, y: 12000),
+                        new Point(x: 200, y: 14000),
+                        new Point(x: 300, y: 7000),
                     ],
-                    lineColor: 'blue'
+                    color: 'blue'
                 ),
             ]
         ),
@@ -75,38 +79,60 @@ $chart = new Chart(
                     name: 'January',
                     segments: [
                         new Segment(
-                            value: 40,
+                            value: 4000,
                             color: 'green',
                             labelColor: 'white',
                         ),
                         new Segment(
-                            value: 30,
+                            value: 3000,
                             color: 'red',
                             labelColor: 'white',
                         ),
                     ],
-                    formatter: fn (float $value) => number_format($value),
+                    formatter: Formatter::number('nl_NL', 2),
                 ),
                 new Bar(
                     name: 'February',
-                    value: 100,
+                    value: 10000,
                     color: 'green'
                 ),
                 new StackedBar(
                     name: 'March',
                     segments: [
                         new Segment(
-                            value: 40,
+                            value: 4000,
                             color: 'green',
                             labelColor: 'white',
                         ),
                         new Segment(
-                            value: 30,
+                            value: 3000,
                             color: 'red',
                             labelColor: 'white',
                         ),
                     ],
                     percentage: true,
+                ),
+            ],
+        ),
+        new Boxplots(
+            boxplots: [
+                new Boxplot(
+                    name: '',
+                    values: [5200, 6200, 7500, 9000, 11000, 13500],
+                    fillColor: 'white',
+                    width: 40,
+                ),
+                new Boxplot(
+                    name: '',
+                    values: [5000, 7000, 8500, 10000, 12000],
+                    fillColor: 'white',
+                    width: 40,
+                ),
+                new Boxplot(
+                    name: '',
+                    values: [5200, 6000, 7200, 8500, 10500, 13000],
+                    fillColor: 'white',
+                    width: 40,
                 ),
             ],
         ),

@@ -4,22 +4,23 @@ namespace Maantje\Charts\SVG;
 
 use Stringable;
 
-readonly class TextResizeableRect implements Stringable
+class TextResizeableRect implements Stringable
 {
     public function __construct(
-        private string $content,
-        private float $x = 0,
-        private float $y = 0,
-        private string $fontFamily = 'Arial',
-        private int $fontSize = 16,
-        private string $rectFill = 'black',
-        private string $rectStroke = '',
-        private int $rectStrokeWidth = 0,
-        private int $rectRx = 0,
-        private int $rectRy = 0,
-        private string $fill = 'white',
+        protected string $content,
+        protected float $x = 0,
+        protected float $y = 0,
+        protected string $fontFamily = 'Arial',
+        protected int $fontSize = 16,
+        protected string $rectFill = 'black',
+        protected string $rectStroke = 'none',
+        protected int $rectStrokeWidth = 0,
+        protected int $rectRx = 0,
+        protected int $rectRy = 0,
+        protected string $fill = 'white',
         public int $labelPaddingX = 20,
         public int $labelLeftMargin = 0,
+        public int $labelTopMargin = 0,
         public string $textAnchor = 'middle'
     ) {}
 
@@ -54,7 +55,7 @@ readonly class TextResizeableRect implements Stringable
             new Text(
                 content: $this->content,
                 x: $this->x + $this->labelLeftMargin,
-                y: $this->y,
+                y: $this->y + $this->labelTopMargin,
                 fontFamily: $this->fontFamily,
                 fontSize: $this->fontSize,
                 fill: $this->fill,
