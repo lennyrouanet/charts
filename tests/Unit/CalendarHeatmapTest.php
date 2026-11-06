@@ -220,3 +220,97 @@ it('rejects invalid configuration', function (array $args) {
     'invalid day value' => [['days' => ['2026-01-01' => 'many']]],
     'dayLabels length' => [['dayLabels' => ['a']]],
 ])->throws(InvalidArgumentException::class);
+
+it('renders default day labels', function () use ($reference) {
+    $svg = heatmap([...$reference, 'dayLabels' => false])->render();
+    $texts = heatmapElements($svg, 'text');
+
+    expect(array_column($texts, 'text'))->toBe(['Mon', 'Wed', 'Fri'])
+        ->and($texts[0])->toMatchArray(['x' => '18', 'y' => '6', 'text-anchor' => 'end', 'fill' => '#57606a', 'font-size' => '10'])
+        ->and($texts[1])->toMatchArray(['x' => '18', 'y' => '36'])
+        ->and($texts[2])->toMatchArray(['x' => '18', 'y' => '66'])
+        ->and(heatmapCells($svg)[0]['x'])->toBe('21')
+        ->and(heatmapRoot($svg)['width'])->toBe('63');
+});
+
+it('reorders default day labels with weekStart', function () use ($reference) {
+    $texts = heatmapElements(heatmap([...$reference, 'dayLabels' => false, 'weekStart' => DayOfWeek::Sunday])->render(), 'text');
+
+    expect(array_column($texts, 'y', 'text'))->toBe(['Mon' => '21', 'Wed' => '51', 'Fri' => '81']);
+});
+
+it('uses custom day labels aligned on order', function () use ($reference) {
+    $svg = heatmap([...$reference, 'dayOrder' => [DayOfWeek::Monday, DayOfWeek::Tuesday], 'dayLabels' => ['Lundi', 'Mardi']])->render();
+
+    expect(array_column(heatmapElements($svg, 'text'), 'text'))->toBe(['Lundi', 'Mardi'])
+        ->and(heatmapCells($svg)[0]['x'])->toBe('48'); // margin 33 + column 1 (Monday 2026-01-05)
+});
+
+it('has no left margin when all day labels are empty', function () use ($reference) {
+    $svg = heatmap([...$reference, 'dayLabels' => array_fill(0, 7, '')])->render();
+
+    expect(heatmapCells($svg)[0]['x'])->toBe('0');
+});
+
+it('renders month labels', function () {
+    $svg = heatmap(['start' => '2026-01-01', 'end' => '2026-03-15', 'monthLabels' => [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ]])->render();
+    $texts = heatmapElements($svg, 'text');
+
+    expect(array_column($texts, 'x', 'text'))->toBe(['Jan' => '0', 'Feb' => '60', 'Mar' => '120'])
+        ->and(array_unique(array_column($texts, 'y')))->toBe(['10'])
+        ->and($texts[0]['text-anchor'])->toBe('start')
+        ->and(heatmapCells($svg)[0]['y'])->toBe('58');
+});
+
+it('renders default month labels', function () {
+    $texts = heatmapElements((new CalendarHeatmap(start: '2026-01-01', end: '2026-01-14', dayLabels: null, legend: false))->render(), 'text');
+
+    expect(array_column($texts, 'text'))->toBe(['Jan']);
+});
+
+it('skips month labels too close to the previous one', function () {
+    $texts = heatmapElements((new CalendarHeatmap(start: '2026-01-30', end: '2026-02-20', dayLabels: null, legend: false))->render(), 'text');
+
+    expect(array_column($texts, 'text'))->toBe(['Jan']);
+});
+
+it('uses custom month labels', function () {
+    $texts = heatmapElements(heatmap(['start' => '2026-01-01', 'end' => '2026-01-14', 'monthLabels' => [
+        'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.',
+    ]])->render(), 'text');
+
+    expect(array_column($texts, 'text'))->toBe(['janv.']);
+});
+
+it('rejects month labels without 12 entries', function () {
+    heatmap(['monthLabels' => ['Jan']]);
+})->throws(InvalidArgumentException::class);
+
+it('renders labels snapshot', function () use ($reference) {
+    expect(pretty((new CalendarHeatmap(...[...$reference, 'legend' => false]))->render()))->toBe(<<<'SVG'
+        <svg xmlns="http://www.w3.org/2000/svg" width="63" height="115">
+          <rect x="0" y="0" width="63" height="115" fill="white" fill-opacity="1" stroke="none" stroke-width="0" rx="0" ry="0"/>
+          <text x="18" y="19" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Mon</text>
+          <text x="18" y="49" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Wed</text>
+          <text x="18" y="79" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Fri</text>
+          <text x="21" y="10" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="start" dominant-baseline="alphabetic" alignment-baseline="auto">Jan</text>
+          <rect x="21" y="58" width="12" height="12" fill="#c8dbce" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="21" y="73" width="12" height="12" fill="#216e39" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="21" y="88" width="12" height="12" fill="#59926b" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="21" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="36" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="36" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="36" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="36" y="58" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="36" y="73" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="36" y="88" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="36" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="51" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="51" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="51" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+        </svg>
+        SVG
+    );
+});

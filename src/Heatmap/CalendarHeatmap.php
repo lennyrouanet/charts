@@ -9,6 +9,7 @@ use DateTimeInterface;
 use InvalidArgumentException;
 use Maantje\Charts\SVG\Fragment;
 use Maantje\Charts\SVG\Rect;
+use Maantje\Charts\SVG\Text;
 
 class CalendarHeatmap
 {
@@ -70,6 +71,10 @@ class CalendarHeatmap
         $this->scale = new ColorScale($color, $shades);
         $this->order = $this->resolveOrder($weekStart, $dayOrder);
         $this->dayLabels = $this->resolveDayLabels($dayLabels);
+
+        if (! is_null($this->monthLabels) && count($this->monthLabels) !== 12) {
+            throw new InvalidArgumentException('monthLabels must contain 12 labels.');
+        }
 
         $days = $this->normalizeDays($days);
         $this->resolveRange($days, $start, $end);
@@ -148,12 +153,78 @@ class CalendarHeatmap
 
     protected function renderDayLabels(): string
     {
-        return '';
+        if (is_null($this->start) || is_null($this->dayLabels)) {
+            return '';
+        }
+
+        $labels = [];
+
+        foreach ($this->dayLabels as $row => $label) {
+            $labels[] = $this->text(
+                content: $label,
+                x: $this->marginLeft() - $this->gap,
+                y: $this->marginTop() + $row * $this->step() + $this->cellSize / 2,
+                textAnchor: 'end',
+                dominantBaseline: 'middle',
+            );
+        }
+
+        return new Fragment($labels);
     }
 
     protected function renderMonthLabels(): string
     {
-        return '';
+        if (is_null($this->start) || is_null($this->end) || is_null($this->monthLabels)) {
+            return '';
+        }
+
+        $candidates = [$this->start];
+        $month = $this->start->modify('first day of next month');
+
+        while ($month <= $this->end) {
+            $candidates[] = $month;
+            $month = $month->modify('first day of next month');
+        }
+
+        $labels = [];
+        $lastColumn = null;
+
+        foreach ($candidates as $date) {
+            $column = $this->column($date);
+
+            if (! is_null($lastColumn) && $column - $lastColumn < 2) {
+                continue;
+            }
+
+            $lastColumn = $column;
+
+            $labels[] = $this->text(
+                content: $this->monthLabels[(int) $date->format('n') - 1],
+                x: $this->marginLeft() + $column * $this->step(),
+                y: $this->fontSize,
+            );
+        }
+
+        return new Fragment($labels);
+    }
+
+    protected function text(string $content, float $x, float $y, string $textAnchor = 'start', string $dominantBaseline = 'alphabetic'): Text
+    {
+        return new Text(
+            content: $content,
+            x: $x,
+            y: $y,
+            fontFamily: $this->fontFamily,
+            fontSize: $this->fontSize,
+            fill: $this->fontColor,
+            textAnchor: $textAnchor,
+            dominantBaseline: $dominantBaseline,
+        );
+    }
+
+    protected function textWidth(string $text): float
+    {
+        return strlen($text) * $this->fontSize * 0.6;
     }
 
     protected function renderLegend(): string
@@ -200,12 +271,14 @@ class CalendarHeatmap
 
     protected function marginLeft(): float
     {
-        return 0;
+        $width = max([0, ...array_map(fn (string $label) => $this->textWidth($label), $this->dayLabels ?? [])]);
+
+        return $width === 0 ? 0 : ceil($width) + $this->gap;
     }
 
     protected function marginTop(): float
     {
-        return 0;
+        return is_null($this->monthLabels) ? 0 : $this->fontSize + $this->gap;
     }
 
     protected function legendHeight(): float
