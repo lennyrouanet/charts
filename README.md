@@ -267,6 +267,8 @@ echo $chart->render();
 
 Days without a value use `emptyColor`. Labels, legend, cell size and fonts can be customized through the constructor.
 
+To make months easier to tell apart, draw a line between them with `monthBorder: '#8c959f'` (and optionally `monthBorderWidth: 1.5`).
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE) for more information.

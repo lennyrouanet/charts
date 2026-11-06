@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
 use Maantje\Charts\SVG\Fragment;
+use Maantje\Charts\SVG\Path;
 use Maantje\Charts\SVG\Rect;
 use Maantje\Charts\SVG\Text;
 
@@ -67,6 +68,8 @@ class CalendarHeatmap
         public int $fontSize = 10,
         public string $fontFamily = 'arial',
         public string $fontColor = '#57606a',
+        public ?string $monthBorder = null,
+        public float $monthBorderWidth = 1,
     ) {
         $this->scale = new ColorScale($color, $shades);
         $this->order = $this->resolveOrder($weekStart, $dayOrder);
@@ -112,6 +115,7 @@ class CalendarHeatmap
                 {$this->renderDayLabels()}
                 {$this->renderMonthLabels()}
                 {$this->renderCells()}
+                {$this->renderMonthBorders()}
                 {$this->renderLegend()}
             </svg>
             SVG;
@@ -239,6 +243,67 @@ class CalendarHeatmap
     protected function textWidth(string $text): float
     {
         return strlen($text) * $this->fontSize * 0.6;
+    }
+
+    /**
+     * Draws a line in the gap between neighbouring cells of different months.
+     * Only right and bottom neighbours are checked so each segment is drawn once.
+     */
+    protected function renderMonthBorders(): string
+    {
+        if (is_null($this->start) || is_null($this->end) || is_null($this->monthBorder)) {
+            return '';
+        }
+
+        $half = $this->gap / 2;
+        $segments = [];
+
+        foreach (new DatePeriod($this->start, new DateInterval('P1D'), $this->end->modify('+1 day')) as $date) {
+            if (! $this->isDisplayed($date)) {
+                continue;
+            }
+
+            $column = $this->column($date);
+            $row = $this->row($date);
+            $x = $this->marginLeft() + $column * $this->step();
+            $y = $this->marginTop() + $row * $this->step();
+
+            if ($this->isOtherMonth($date, $this->dateAt($column + 1, $row))) {
+                $segments[] = sprintf('M%s %sV%s', $x + $this->cellSize + $half, $y - $half, $y + $this->cellSize + $half);
+            }
+
+            if ($this->isOtherMonth($date, $this->dateAt($column, $row + 1))) {
+                $segments[] = sprintf('M%s %sH%s', $x - $half, $y + $this->cellSize + $half, $x + $this->cellSize + $half);
+            }
+        }
+
+        if (empty($segments)) {
+            return '';
+        }
+
+        return new Path(
+            d: implode(' ', $segments),
+            fill: 'none',
+            stroke: $this->monthBorder,
+            strokeWidth: $this->monthBorderWidth,
+        );
+    }
+
+    protected function dateAt(int $column, int $row): ?DateTimeImmutable
+    {
+        if (is_null($this->gridStart) || ! isset($this->order[$row])) {
+            return null;
+        }
+
+        $offset = $column * 7 + ($this->order[$row]->value - $this->order[0]->value + 7) % 7;
+        $date = $this->gridStart->modify("+$offset days");
+
+        return $date < $this->start || $date > $this->end ? null : $date;
+    }
+
+    protected function isOtherMonth(DateTimeInterface $date, ?DateTimeInterface $neighbour): bool
+    {
+        return ! is_null($neighbour) && $neighbour->format('Y-m') !== $date->format('Y-m');
     }
 
     protected function renderLegend(): string

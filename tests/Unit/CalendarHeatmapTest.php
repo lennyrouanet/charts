@@ -435,3 +435,42 @@ it('accepts numeric string values', function () use ($reference) {
     expect($cells[0]['fill'])->toBe('#c8dbce')
         ->and($cells[1]['fill'])->toBe('#216e39');
 });
+
+it('renders no month border by default', function () use ($reference) {
+    expect(heatmapElements(heatmap($reference)->render(), 'path'))->toBe([]);
+});
+
+it('draws a separator between consecutive months', function () {
+    $paths = heatmapElements(heatmap(['start' => '2026-01-26', 'end' => '2026-02-08', 'monthBorder' => '#57606a'])->render(), 'path');
+
+    expect($paths)->toHaveCount(1)
+        ->and($paths[0])->toMatchArray([
+            'd' => 'M13.5 -1.5V13.5 M13.5 13.5V28.5 M13.5 28.5V43.5 M13.5 43.5V58.5 M13.5 58.5V73.5 M13.5 73.5V88.5 M-1.5 88.5H13.5',
+            'fill' => 'none',
+            'stroke' => '#57606a',
+            'stroke-width' => '1',
+        ]);
+});
+
+it('uses the month border width', function () {
+    $paths = heatmapElements(heatmap(['start' => '2026-01-26', 'end' => '2026-02-08', 'monthBorder' => 'red', 'monthBorderWidth' => 1.5])->render(), 'path');
+
+    expect($paths[0]['stroke-width'])->toBe('1.5');
+});
+
+it('offsets month borders by label margins', function () {
+    $svg = (new CalendarHeatmap(start: '2026-01-26', end: '2026-02-08', legend: false, monthBorder: '#57606a'))->render();
+
+    expect(heatmapElements($svg, 'path')[0]['d'])->toStartWith('M40.5 11.5V26.5 ');
+});
+
+it('follows the week start for month borders', function () {
+    $paths = heatmapElements(heatmap(['start' => '2026-01-25', 'end' => '2026-02-07', 'weekStart' => DayOfWeek::Sunday, 'monthBorder' => '#57606a'])->render(), 'path');
+
+    // Sunday 2026-01-25 → Saturday 2026-01-31 fill column 0; February is column 1 only.
+    expect($paths[0]['d'])->toBe('M13.5 -1.5V13.5 M13.5 13.5V28.5 M13.5 28.5V43.5 M13.5 43.5V58.5 M13.5 58.5V73.5 M13.5 73.5V88.5 M13.5 88.5V103.5');
+});
+
+it('renders no month border within a single month', function () use ($reference) {
+    expect(heatmapElements(heatmap([...$reference, 'monthBorder' => '#57606a'])->render(), 'path'))->toBe([]);
+});

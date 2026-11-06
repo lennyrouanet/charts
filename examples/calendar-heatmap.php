@@ -24,6 +24,7 @@ $chart = new CalendarHeatmap(
     end: '2026-12-31',
     weekStart: DayOfWeek::Sunday,
     dayLabels: ['', 'Mon', '', 'Wed', '', 'Fri', ''],
+    monthBorder: '#8c959f',
 );
 
 echo $chart->render();
