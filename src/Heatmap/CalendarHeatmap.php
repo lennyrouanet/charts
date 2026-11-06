@@ -229,7 +229,27 @@ class CalendarHeatmap
 
     protected function renderLegend(): string
     {
-        return '';
+        if (is_null($this->start) || ! $this->legend) {
+            return '';
+        }
+
+        [$less, $more] = $this->legendLabels;
+
+        $x = $this->width() - $this->legendWidth();
+        $y = $this->marginTop() + count($this->order) * $this->step();
+        $textY = $y + $this->cellSize / 2;
+
+        $elements = [$this->text($less, $x, $textY, dominantBaseline: 'middle')];
+        $x += $this->textWidth($less) + $this->gap;
+
+        foreach ([$this->emptyColor, ...$this->scale->shades()] as $color) {
+            $elements[] = $this->cell($x, $y, $color);
+            $x += $this->step();
+        }
+
+        $elements[] = $this->text($more, $this->width(), $textY, textAnchor: 'end', dominantBaseline: 'middle');
+
+        return new Fragment($elements);
     }
 
     protected function background(): string
@@ -273,7 +293,7 @@ class CalendarHeatmap
     {
         $width = max([0, ...array_map(fn (string $label) => $this->textWidth($label), $this->dayLabels ?? [])]);
 
-        return $width === 0 ? 0 : ceil($width) + $this->gap;
+        return $width <= 0 ? 0 : ceil($width) + $this->gap;
     }
 
     protected function marginTop(): float
@@ -283,12 +303,20 @@ class CalendarHeatmap
 
     protected function legendHeight(): float
     {
-        return 0;
+        return $this->legend ? $this->gap + $this->cellSize : 0;
     }
 
     protected function legendWidth(): float
     {
-        return 0;
+        if (! $this->legend) {
+            return 0;
+        }
+
+        $shades = count($this->scale->shades());
+
+        return $this->textWidth($this->legendLabels[0]) + $this->gap
+            + ($shades + 1) * $this->cellSize + $shades * $this->gap
+            + $this->gap + $this->textWidth($this->legendLabels[1]);
     }
 
     protected function width(): float
