@@ -8,7 +8,7 @@ class Path
         protected string $d = '',
         protected string $fill = 'black',
         protected string $stroke = 'none',
-        protected int $strokeWidth = 0,
+        protected float $strokeWidth = 0,
     ) {}
 
     public function __toString(): string

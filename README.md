@@ -6,7 +6,7 @@
 
 - Simple, intuitive API for chart creation
 - Lightweight, with no external dependencies
-- Supports various chart types: line charts, bar charts, stacked charts, boxplots, and mixed charts
+- Supports various chart types: line charts, bar charts, stacked charts, boxplots, mixed charts, and calendar heatmaps
 - Fully customizable and extendable
 - Outputs pure SVG, allowing for:
   - Embedding in PDFs, [view example PDF report](https://raw.githubusercontent.com/maantje/charts/refs/heads/main/examples/output/report.pdf)
@@ -36,6 +36,7 @@ Below are some examples of the types of charts you can create using this library
 - [Mixed Chart](#mixed-chart)
 - [Negative Values Chart](#negative-values-chart)
 - [Pie Chart](#pie-chart)
+- [Calendar Heatmap](#calendar-heatmap)
 
 ### Example Usage With mPDF
 [📄 View PDF document](https://raw.githubusercontent.com/maantje/charts/refs/heads/main/examples/output/report.pdf)  
@@ -96,6 +97,10 @@ Below are some examples of the types of charts you can create using this library
 ### Pie chart
 ![Pie chart](./examples/output/pie-chart.svg)  
 [View source](./examples/pie-chart.php)
+
+### Calendar heatmap
+![Calendar heatmap](./examples/output/calendar-heatmap.svg)  
+[View source](./examples/calendar-heatmap.php)
 
 ## Usage
 
@@ -235,6 +240,34 @@ $chart = new Chart(
     // ...
 );
 ```
+
+#### Calendar Heatmap
+
+A GitHub-style heatmap with one row per day of the week and one square per day. Give a base color and a number of shades; the gradient is computed for you.
+
+```php
+use Maantje\Charts\Heatmap\CalendarHeatmap;
+use Maantje\Charts\Heatmap\DayOfWeek;
+
+$chart = new CalendarHeatmap(
+    days: [
+        '2026-01-03' => 4,
+        '2026-01-04' => 12,
+        // or new Day(date: '2026-01-05', value: 7),
+    ],
+    color: '#216e39',
+    shades: 5,
+    start: '2026-01-01',
+    end: '2026-12-31',
+    weekStart: DayOfWeek::Sunday, // or dayOrder: [DayOfWeek::Monday, ...]
+);
+
+echo $chart->render();
+```
+
+Days without a value use `emptyColor`. Labels, legend, cell size and fonts can be customized through the constructor.
+
+To make months easier to tell apart, draw a line between them with `monthBorder: '#8c959f'` (and optionally `monthBorderWidth: 1.5`).
 
 ## License
 
