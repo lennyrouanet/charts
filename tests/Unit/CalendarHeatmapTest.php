@@ -226,11 +226,11 @@ it('renders default day labels', function () use ($reference) {
     $texts = heatmapElements($svg, 'text');
 
     expect(array_column($texts, 'text'))->toBe(['Mon', 'Wed', 'Fri'])
-        ->and($texts[0])->toMatchArray(['x' => '18', 'y' => '6', 'text-anchor' => 'end', 'fill' => '#57606a', 'font-size' => '10'])
-        ->and($texts[1])->toMatchArray(['x' => '18', 'y' => '36'])
-        ->and($texts[2])->toMatchArray(['x' => '18', 'y' => '66'])
-        ->and(heatmapCells($svg)[0]['x'])->toBe('21')
-        ->and(heatmapRoot($svg)['width'])->toBe('63');
+        ->and($texts[0])->toMatchArray(['x' => '24', 'y' => '6', 'text-anchor' => 'end', 'fill' => '#57606a', 'font-size' => '10'])
+        ->and($texts[1])->toMatchArray(['x' => '24', 'y' => '36'])
+        ->and($texts[2])->toMatchArray(['x' => '24', 'y' => '66'])
+        ->and(heatmapCells($svg)[0]['x'])->toBe('27')
+        ->and(heatmapRoot($svg)['width'])->toBe('69');
 });
 
 it('reorders default day labels with weekStart', function () use ($reference) {
@@ -243,7 +243,7 @@ it('uses custom day labels aligned on order', function () use ($reference) {
     $svg = heatmap([...$reference, 'dayOrder' => [DayOfWeek::Monday, DayOfWeek::Tuesday], 'dayLabels' => ['Lundi', 'Mardi']])->render();
 
     expect(array_column(heatmapElements($svg, 'text'), 'text'))->toBe(['Lundi', 'Mardi'])
-        ->and(heatmapCells($svg)[0]['x'])->toBe('48'); // margin 33 + column 1 (Monday 2026-01-05)
+        ->and(heatmapCells($svg)[0]['x'])->toBe('58'); // margin 43 + column 1 (Monday 2026-01-05)
 });
 
 it('has no left margin when all day labels are empty', function () use ($reference) {
@@ -290,26 +290,26 @@ it('rejects month labels without 12 entries', function () {
 
 it('renders labels snapshot', function () use ($reference) {
     expect(pretty((new CalendarHeatmap(...[...$reference, 'legend' => false]))->render()))->toBe(<<<'SVG'
-        <svg xmlns="http://www.w3.org/2000/svg" width="63" height="115">
-          <rect x="0" y="0" width="63" height="115" fill="white" fill-opacity="1" stroke="none" stroke-width="0" rx="0" ry="0"/>
-          <text x="18" y="19" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Mon</text>
-          <text x="18" y="49" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Wed</text>
-          <text x="18" y="79" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Fri</text>
-          <text x="21" y="10" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="start" dominant-baseline="alphabetic" alignment-baseline="auto">Jan</text>
-          <rect x="21" y="58" width="12" height="12" fill="#c8dbce" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="21" y="73" width="12" height="12" fill="#216e39" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="21" y="88" width="12" height="12" fill="#59926b" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="21" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="58" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="73" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="88" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="51" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="51" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="51" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="69" height="115">
+          <rect x="0" y="0" width="69" height="115" fill="white" fill-opacity="1" stroke="none" stroke-width="0" rx="0" ry="0"/>
+          <text x="24" y="19" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Mon</text>
+          <text x="24" y="49" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Wed</text>
+          <text x="24" y="79" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Fri</text>
+          <text x="27" y="10" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="start" dominant-baseline="alphabetic" alignment-baseline="auto">Jan</text>
+          <rect x="27" y="58" width="12" height="12" fill="#c8dbce" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="27" y="73" width="12" height="12" fill="#216e39" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="27" y="88" width="12" height="12" fill="#59926b" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="27" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="58" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="73" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="88" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="57" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="57" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="57" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
         </svg>
         SVG
     );
@@ -345,24 +345,24 @@ it('renders full chart snapshot', function () use ($reference) {
     expect(pretty((new CalendarHeatmap(...$reference))->render()))->toBe(<<<'SVG'
         <svg xmlns="http://www.w3.org/2000/svg" width="126" height="130">
           <rect x="0" y="0" width="126" height="130" fill="white" fill-opacity="1" stroke="none" stroke-width="0" rx="0" ry="0"/>
-          <text x="18" y="19" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Mon</text>
-          <text x="18" y="49" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Wed</text>
-          <text x="18" y="79" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Fri</text>
-          <text x="21" y="10" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="start" dominant-baseline="alphabetic" alignment-baseline="auto">Jan</text>
-          <rect x="21" y="58" width="12" height="12" fill="#c8dbce" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="21" y="73" width="12" height="12" fill="#216e39" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="21" y="88" width="12" height="12" fill="#59926b" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="21" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="58" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="73" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="88" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="36" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="51" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="51" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
-          <rect x="51" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <text x="24" y="19" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Mon</text>
+          <text x="24" y="49" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Wed</text>
+          <text x="24" y="79" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="end" dominant-baseline="middle" alignment-baseline="auto">Fri</text>
+          <text x="27" y="10" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="start" dominant-baseline="alphabetic" alignment-baseline="auto">Jan</text>
+          <rect x="27" y="58" width="12" height="12" fill="#c8dbce" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="27" y="73" width="12" height="12" fill="#216e39" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="27" y="88" width="12" height="12" fill="#59926b" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="27" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="58" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="73" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="88" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="42" y="103" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="57" y="13" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="57" y="28" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
+          <rect x="57" y="43" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
           <text x="0" y="124" font-family="arial" font-size="10" fill="#57606a" stroke="none" stroke-width="0" text-anchor="start" dominant-baseline="middle" alignment-baseline="auto">Less</text>
           <rect x="27" y="118" width="12" height="12" fill="#ebedf0" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>
           <rect x="42" y="118" width="12" height="12" fill="#c8dbce" fill-opacity="1" stroke="none" stroke-width="0" rx="2" ry="2"/>

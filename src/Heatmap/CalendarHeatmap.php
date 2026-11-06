@@ -291,7 +291,8 @@ class CalendarHeatmap
 
     protected function marginLeft(): float
     {
-        $width = max([0, ...array_map(fn (string $label) => $this->textWidth($label), $this->dayLabels ?? [])]);
+        // Day labels are right-aligned into this margin, so overestimate their width to keep wide glyphs (W, M) inside the SVG.
+        $width = max([0, ...array_map(fn (string $label) => strlen($label) * $this->fontSize * 0.8, $this->dayLabels ?? [])]);
 
         return $width <= 0 ? 0 : ceil($width) + $this->gap;
     }
