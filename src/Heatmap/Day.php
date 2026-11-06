@@ -20,14 +20,15 @@ class Day
 
     public static function normalize(string|DateTimeInterface $date): DateTimeImmutable
     {
-        if ($date instanceof DateTimeInterface) {
-            return DateTimeImmutable::createFromInterface($date)->setTime(0, 0);
+        if (is_string($date)) {
+            try {
+                $date = new DateTimeImmutable($date);
+            } catch (Exception) {
+                throw new InvalidArgumentException("Invalid date: $date");
+            }
         }
 
-        try {
-            return (new DateTimeImmutable($date))->setTime(0, 0);
-        } catch (Exception) {
-            throw new InvalidArgumentException("Invalid date: $date");
-        }
+        // Keep the calendar day only, in the default timezone, so dates from any timezone compare as days.
+        return new DateTimeImmutable($date->format('Y-m-d'));
     }
 }

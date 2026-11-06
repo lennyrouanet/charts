@@ -43,7 +43,7 @@ class CalendarHeatmap
      * @param  DayOfWeek[]|null  $dayOrder
      * @param  string[]|null|false  $dayLabels  false uses the default Mon/Wed/Fri labels, null hides them
      * @param  string[]|null  $monthLabels
-     * @param  array{0: string, 1: string}  $legendLabels
+     * @param  string[]  $legendLabels  [less, more]
      */
     public function __construct(
         array $days = [],
@@ -75,6 +75,13 @@ class CalendarHeatmap
         if (! is_null($this->monthLabels) && count($this->monthLabels) !== 12) {
             throw new InvalidArgumentException('monthLabels must contain 12 labels.');
         }
+
+        if (count($this->legendLabels) !== 2) {
+            throw new InvalidArgumentException('legendLabels must contain 2 labels.');
+        }
+
+        $this->monthLabels = is_null($this->monthLabels) ? null : array_values($this->monthLabels);
+        $this->legendLabels = array_values($this->legendLabels);
 
         $days = $this->normalizeDays($days);
         $this->resolveRange($days, $start, $end);
@@ -196,11 +203,18 @@ class CalendarHeatmap
                 continue;
             }
 
+            $label = $this->monthLabels[(int) $date->format('n') - 1];
+            $x = $this->marginLeft() + $column * $this->step();
+
+            if ($x + $this->textWidth($label) > $this->marginLeft() + $this->weeks * $this->step() - $this->gap) {
+                continue;
+            }
+
             $lastColumn = $column;
 
             $labels[] = $this->text(
-                content: $this->monthLabels[(int) $date->format('n') - 1],
-                x: $this->marginLeft() + $column * $this->step(),
+                content: $label,
+                x: $x,
                 y: $this->fontSize,
             );
         }
@@ -394,8 +408,8 @@ class CalendarHeatmap
         foreach ($days as $key => $day) {
             if ($day instanceof Day) {
                 $normalized[] = $day;
-            } elseif (is_int($day) || is_float($day)) {
-                $normalized[] = new Day((string) $key, $day);
+            } elseif (is_numeric($day)) {
+                $normalized[] = new Day((string) $key, (float) $day);
             } else {
                 throw new InvalidArgumentException('Days must be Day instances or date => numeric value pairs.');
             }

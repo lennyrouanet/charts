@@ -374,3 +374,64 @@ it('renders full chart snapshot', function () use ($reference) {
         SVG
     );
 });
+
+it('buckets dates from other timezones by calendar day', function () {
+    $timezone = date_default_timezone_get();
+    date_default_timezone_set('Europe/Paris');
+
+    try {
+        $cells = heatmapCells(heatmap([
+            'start' => new DateTimeImmutable('2026-01-05', new DateTimeZone('UTC')),
+            'end' => new DateTimeImmutable('2026-01-07', new DateTimeZone('UTC')),
+            'days' => [
+                new Day(new DateTimeImmutable('2026-01-07', new DateTimeZone('UTC')), 5),
+                '2026-01-05T23:30:00+14:00' => 5,
+            ],
+        ])->render());
+    } finally {
+        date_default_timezone_set($timezone);
+    }
+
+    expect(array_column($cells, 'fill'))->toBe(['#216e39', '#ebedf0', '#216e39']);
+});
+
+it('does not add a day when inferring range from mixed timezones', function () {
+    $timezone = date_default_timezone_get();
+    date_default_timezone_set('Europe/Paris');
+
+    try {
+        $cells = heatmapCells(heatmap(['days' => [
+            new Day(new DateTimeImmutable('2026-01-05', new DateTimeZone('Pacific/Kiritimati')), 1),
+            new Day('2026-01-05', 2),
+        ]])->render());
+    } finally {
+        date_default_timezone_set($timezone);
+    }
+
+    expect($cells)->toHaveCount(1);
+});
+
+it('skips a month label that would overflow the right edge', function () {
+    $texts = heatmapElements((new CalendarHeatmap(start: '2026-11-10', end: '2026-12-01', dayLabels: null, legend: false))->render(), 'text');
+
+    expect(array_column($texts, 'text'))->toBe(['Nov']);
+});
+
+it('accepts month labels with non sequential keys', function () {
+    $texts = heatmapElements(heatmap(['start' => '2026-01-01', 'end' => '2026-01-14', 'monthLabels' => array_combine(range(1, 12), [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ])])->render(), 'text');
+
+    expect(array_column($texts, 'text'))->toBe(['Jan']);
+});
+
+it('rejects legend labels without two entries', function () {
+    heatmap(['legend' => true, 'legendLabels' => ['Less']]);
+})->throws(InvalidArgumentException::class);
+
+it('accepts numeric string values', function () use ($reference) {
+    $cells = heatmapCells(heatmap([...$reference, 'days' => ['2026-01-01' => '0', '2026-01-02' => '10']])->render());
+
+    expect($cells[0]['fill'])->toBe('#c8dbce')
+        ->and($cells[1]['fill'])->toBe('#216e39');
+});
